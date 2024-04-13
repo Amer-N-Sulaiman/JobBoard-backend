@@ -2,6 +2,7 @@ from flask import request, Blueprint, jsonify
 from database import db
 import bcrypt
 from Blueprints.user.user_models import User, UserSchema
+from .helper_functions import pw_is_strong
 
 user_bp = Blueprint('user', __name__)
 
@@ -13,7 +14,8 @@ def signup():
     password = data.get('password')
     if full_name=='' or username=='' or password=='':
         return jsonify({'error': 'All fields are required'}), 400
-    
+    if not pw_is_strong(password):
+        return jsonify({'error': 'Choose a stronger password'}), 400
     salt = bcrypt.gensalt()
     hashed_pw = bcrypt.hashpw(password.encode('utf-8'), salt)
 
@@ -40,3 +42,5 @@ def get_all_users():
 @user_bp.route('/login')
 def login():
     return jsonify({'message': 'login'})
+
+
