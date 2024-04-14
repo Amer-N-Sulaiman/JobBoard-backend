@@ -44,8 +44,21 @@ def signup():
 
 @user_bp.route('/login', methods=['POST'])
 def login():
-    
-    return jsonify({'message': 'login'})
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+
+    user = User.query.filter_by(username=username).first()
+
+    if not user:
+        return jsonify({'error': 'username does not exist'}), 401
+
+    if not bcrypt.checkpw(password.encode('utf-8'), user.password):
+        return jsonify({'error': 'wrong password'}), 401
+
+    token = create_jwt(user.id)
+
+    return jsonify({'token': token})
 
 @user_bp.route('/get_all_users')
 def get_all_users():
