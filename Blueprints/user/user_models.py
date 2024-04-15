@@ -6,6 +6,7 @@ class User(db.Model):
     full_name = db.Column(db.String(50), nullable=False)
     username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(50), nullable=False)
+    employer = db.Column(db.Boolean, default=False)
     date_joined = db.Column(db.Date, default=datetime.utcnow)
 
 class UserSchema(ma.Schema):

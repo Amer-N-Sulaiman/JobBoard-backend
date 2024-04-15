@@ -12,6 +12,7 @@ def signup():
     # Retrieve Json data
     data = request.json
     full_name = data.get('full_name')
+    type = data.get('type')
     username = data.get('username')
     password = data.get('password')
 
@@ -28,7 +29,7 @@ def signup():
     hashed_pw = bcrypt.hashpw(password.encode('utf-8'), salt)
 
     # Create a user and save it to the db (with error handling)
-    new_user = User(full_name=full_name, username=username, password=hashed_pw)
+    new_user = User(full_name=full_name, type=type, username=username, password=hashed_pw)
     try:
         db.session.add(new_user)
         db.session.commit()
