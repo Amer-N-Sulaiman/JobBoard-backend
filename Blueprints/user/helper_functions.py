@@ -23,7 +23,7 @@ def create_jwt(user_id):
     return token
 
 def verify_jwt(token):
-    secret_key = 'your_secret_key'  # Same key as used in creation
+    secret_key = current_app.config['SECRET_KEY']  # Same key as used in creation
     try:
         payload = jwt.decode(token, secret_key, algorithms=['HS256'])
         return payload  # Returns the payload if verification is successful
