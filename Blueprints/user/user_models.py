@@ -7,7 +7,7 @@ class User(db.Model):
     username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(50), nullable=False)
     employer = db.Column(db.Boolean, default=False)
-    date_joined = db.Column(db.Date, default=datetime.utcnow)
+    date_joined = db.Column(db.Date, default=datetime.now(datetime.UTC))
 
 class UserSchema(ma.Schema):
     id = ma.fields.Str()
