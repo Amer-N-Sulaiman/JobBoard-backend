@@ -63,13 +63,9 @@ def login():
 
 @user_bp.route('/get_all_users')
 def get_all_users():
-    print(0)
     users = User.query.all()
-    print(1)
     userSchema = UserSchema()
-    print(2)
     users = userSchema.dump(users, many=True)
-    print(3)
     return jsonify(users)
     
 

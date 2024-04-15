@@ -1,7 +1,9 @@
 from flask import Blueprint, jsonify, request
 
 from .job_models import Job, JobSchema
-from Blueprints.user.helper_functions import verify_jwt
+from Blueprints.user.helper_functions import require_auth
+
+from database import db
 
 job_bp = Blueprint('job', __name__)
 
@@ -15,17 +17,24 @@ def view_all():
 
 @job_bp.route('/add', methods=['POST'])
 def add():
-    headers = request.headers
-    bearer = headers.get('Authorization')
-    if not bearer:
-        return jsonify({
-            'Error': 'No Authentication Token Found'
-        }), 401
+    verification_payload = require_auth(request)
+    if "error" in verification_payload:
+        return jsonify({'error': verification_payload['error']})
     
+    user_id = verification_payload['user_id']
 
-    token = bearer.split()[1]
-    
-    verification_payload = verify_jwt(token)
-    return jsonify(verification_payload) 
+    data = request.json
 
-    return jsonify({'Token': token})
+    title = data.get('title')
+    body = data.get('body')
+    posted_by = str(user_id)
+
+    new_job = Job(title=title, body=body, posted_by=posted_by)
+
+    db.session.add(new_job)
+    db.session.commit()
+
+    jobSchema = JobSchema()
+    new_job = jobSchema.dump(new_job)
+
+    return jsonify(new_job)

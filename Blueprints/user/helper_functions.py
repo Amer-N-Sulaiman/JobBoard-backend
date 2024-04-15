@@ -31,3 +31,18 @@ def verify_jwt(token):
         return {'error': 'token expired'}
     except jwt.InvalidTokenError:
         return {'error': 'invalid token'}  # Token is invalid
+    
+
+def require_auth(request):
+    headers = request.headers
+    bearer = headers.get('Authorization')
+    if not bearer:
+        return ({
+            'error': 'No Authentication Token Found'
+        })
+    
+
+    token = bearer.split()[1]
+    
+    verification_payload = verify_jwt(token)
+    return verification_payload
