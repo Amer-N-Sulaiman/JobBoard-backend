@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 
 from .job_models import Job, JobSchema
 from Blueprints.user.helper_functions import require_auth
+from Blueprints.user.user_models import User
 
 from database import db
 
@@ -22,12 +23,13 @@ def add():
         return jsonify({'error': verification_payload['error']})
     
     user_id = verification_payload['user_id']
-
+    user = User.query.get(user_id)
+    
     data = request.json
 
     title = data.get('title')
     body = data.get('body')
-    posted_by = str(user_id)
+    posted_by = user.username
 
     new_job = Job(title=title, body=body, posted_by=posted_by)
 
