@@ -39,3 +39,39 @@ def add():
 
     return jsonify(new_job)
 
+@job_bp.route('/apply/<job_id>')
+def apply(job_id):
+    verification_payload = require_auth(request)
+    if "error" in verification_payload:
+        return jsonify({'error': verification_payload['error']})
+    
+    user_id = verification_payload['user_id']
+
+    job = Job.query.get(job_id)
+
+    if job:
+
+        appliers = job.appliers[1:-1]
+
+        appliers_list = appliers.split(', ')
+
+        if appliers_list[0]=='':
+            appliers_list = appliers_list[1:]
+
+        appliers_list = [int(x) for x in appliers_list]
+        
+        if user_id not in appliers_list:
+            appliers_list.append(user_id)
+            
+        else:
+            appliers_list.remove(user_id)
+        
+        appliers = str(appliers_list)
+        job.appliers = appliers
+        db.session.add(job)
+        db.session.commit()
+        jobSchema = JobSchema()
+        job = jobSchema.dump(job)
+        return jsonify(job)
+    else:
+        return jsonify({'error': 'job not found'})
