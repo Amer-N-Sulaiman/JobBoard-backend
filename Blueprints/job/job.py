@@ -15,7 +15,6 @@ def view_all():
     jobSchema = JobSchema()
     jobs = jobSchema.dump(jobs, many=True)
     for job in jobs:
-        print(job)
         job['appliers'] = str_to_list(job['appliers'])
     return jsonify(jobs)
 
@@ -30,9 +29,18 @@ def add():
     user = User.query.get(user_id)
     
     data = request.json
-
+    
     title = data.get('title')
     body = data.get('body')
+
+    if not title or len(title)==0:
+        return jsonify({
+            'error': 'A title is required'
+        })
+    if not body or len(body)==0:
+        return jsonify({
+            'error': 'A description is required'
+        })
     posted_by = user.username
 
     new_job = Job(title=title, body=body, posted_by=posted_by)

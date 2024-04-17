@@ -35,6 +35,8 @@ def verify_jwt(token):
 
 def require_auth(request):
     headers = request.headers
+    print('*********headers')
+    print(headers)
     bearer = headers.get('Authorization')
     if not bearer:
         return ({
