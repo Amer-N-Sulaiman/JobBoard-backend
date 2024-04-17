@@ -37,12 +37,21 @@ def signup():
     except Exception as e:
         error_message = str(e.orig)
         if 'UNIQUE' in error_message:
-            error_message = 'Sorry, this username is taken'
+            if 'username' in error_message:
+                error_message = 'Sorry, this username is taken'
+            if 'email' in error_messsage:
+                error_message = 'Sorry, this email is taken'
         return jsonify({'error': error_message}), 400
 
     token = create_jwt(new_user.id)
 
-    return jsonify({'token': token})
+    return jsonify({
+        'fullname': new_user.full_name,
+        'username': username,
+        'email': new_user.email,
+        'token': token
+        
+        })
 
 @user_bp.route('/login', methods=['POST'])
 def login():
@@ -60,7 +69,13 @@ def login():
 
     token = create_jwt(user.id)
 
-    return jsonify({'token': token})
+    return jsonify({
+        'fullname': user.full_name,
+        'username': username,
+        'email': user.email,
+        'token': token
+        
+        })
 
 @user_bp.route('/get_all_users')
 def get_all_users():
