@@ -27,13 +27,39 @@ def all_user_jobs():
     user_id = verification_payload['user_id']
     user = User.query.get(user_id)
     jobs = Job.query.filter_by(posted_by=user.username)
-    print(jobs)
     jobSchema = JobSchema()
     jobs = jobSchema.dump(jobs, many=True)
     for job in jobs:
         job['appliers'] = str_to_list(job['appliers'])
-    print(jobs)
     return jsonify(jobs)
+
+@job_bp.route('all_job_appliers/<job_id>')
+def all_job_appliers(job_id):
+    verification_payload = require_auth(request)
+    if "error" in verification_payload:
+        return jsonify({'error': verification_payload['error']})
+    
+    user_id = verification_payload['user_id']
+    user = User.query.get(user_id)
+
+    job = Job.query.get(job_id)    
+    if job.posted_by != user.username:
+        return jsonify({'error': 'Not Authorized'})
+    
+
+    appliers_ids = str_to_list(job.appliers)
+    appliers = []
+    for i in range(len(appliers_ids)):
+        user = User.query.get(appliers_ids[i])
+        appliers.append({
+            "id": appliers_ids[i],
+            "username": user.username,
+            "fullname": user.full_name,
+            "email": user.email
+        })
+
+
+    return jsonify(appliers)
 
 @job_bp.route('/add', methods=['POST'])
 def add():
