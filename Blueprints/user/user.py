@@ -39,7 +39,7 @@ def signup():
         if 'UNIQUE' in error_message:
             if 'username' in error_message:
                 error_message = 'Sorry, this username is taken'
-            if 'email' in error_messsage:
+            if 'email' in error_message:
                 error_message = 'Sorry, this email is taken'
         return jsonify({'error': error_message}), 400
 
