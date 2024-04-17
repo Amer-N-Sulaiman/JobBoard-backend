@@ -9,9 +9,9 @@ from database import db
 
 job_bp = Blueprint('job', __name__)
 
-@job_bp.route('/view_all', methods=['GET'])
-def view_all():
-    jobs = Job.query.all()
+@job_bp.route('/view_all/<start>', methods=['GET'])
+def view_all(start):
+    jobs = Job.query.offset(start).limit(2)
     jobSchema = JobSchema()
     jobs = jobSchema.dump(jobs, many=True)
     for job in jobs:
