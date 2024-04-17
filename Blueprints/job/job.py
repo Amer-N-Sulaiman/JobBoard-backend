@@ -3,6 +3,7 @@ from flask import Blueprint, jsonify, request
 from .job_models import Job, JobSchema
 from Blueprints.user.helper_functions import require_auth
 from Blueprints.user.user_models import User
+from .helper_functions import str_to_list
 
 from database import db
 
@@ -13,6 +14,9 @@ def view_all():
     jobs = Job.query.all()
     jobSchema = JobSchema()
     jobs = jobSchema.dump(jobs, many=True)
+    for job in jobs:
+        print(job)
+        job['appliers'] = str_to_list(job['appliers'])
     return jsonify(jobs)
 
 

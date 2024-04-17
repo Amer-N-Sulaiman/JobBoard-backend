@@ -46,6 +46,7 @@ def signup():
     token = create_jwt(new_user.id)
 
     return jsonify({
+        'user_id': str(new_user.id),
         'fullname': new_user.full_name,
         'username': username,
         'email': new_user.email,
@@ -70,6 +71,7 @@ def login():
     token = create_jwt(user.id)
 
     return jsonify({
+        'user_id': str(user.id),
         'fullname': user.full_name,
         'username': username,
         'email': user.email,
