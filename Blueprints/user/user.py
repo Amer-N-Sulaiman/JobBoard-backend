@@ -12,9 +12,10 @@ def signup():
     # Retrieve Json data
     data = request.json
     full_name = data.get('full_name')
-    is_employer = data.get('is_employer')
     username = data.get('username')
+    email = data.get('email')
     password = data.get('password')
+    is_employer = data.get('is_employer')
 
     # Check if any value is null
     if full_name=='' or username=='' or password=='':
@@ -29,7 +30,7 @@ def signup():
     hashed_pw = bcrypt.hashpw(password.encode('utf-8'), salt)
 
     # Create a user and save it to the db (with error handling)
-    new_user = User(full_name=full_name, is_employer=is_employer, username=username, password=hashed_pw)
+    new_user = User(full_name=full_name, email=email, is_employer=is_employer, username=username, password=hashed_pw)
     try:
         db.session.add(new_user)
         db.session.commit()
