@@ -18,6 +18,22 @@ def view_all(start):
         job['appliers'] = str_to_list(job['appliers'])
     return jsonify(jobs)
 
+@job_bp.route('/all_user_jobs')
+def all_user_jobs():
+    verification_payload = require_auth(request)
+    if "error" in verification_payload:
+        return jsonify({'error': verification_payload['error']})
+    
+    user_id = verification_payload['user_id']
+    user = User.query.get(user_id)
+    jobs = Job.query.filter_by(posted_by=user.username)
+    print(jobs)
+    jobSchema = JobSchema()
+    jobs = jobSchema.dump(jobs, many=True)
+    for job in jobs:
+        job['appliers'] = str_to_list(job['appliers'])
+    print(jobs)
+    return jsonify(jobs)
 
 @job_bp.route('/add', methods=['POST'])
 def add():
