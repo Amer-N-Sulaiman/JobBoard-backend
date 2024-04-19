@@ -40,7 +40,10 @@ def all_job_appliers(job_id):
         return jsonify({'error': verification_payload['error']})
     
     user_id = verification_payload['user_id']
+    print('user_id: ' + str(user_id))
     user = User.query.get(user_id)
+    print('user ***********')
+    print(user)
 
     job = Job.query.get(job_id)
     if not job:
@@ -53,6 +56,8 @@ def all_job_appliers(job_id):
     appliers = []
     for i in range(len(appliers_ids)):
         user = User.query.get(appliers_ids[i])
+        if not user:
+            continue
         appliers.append({
             "id": appliers_ids[i],
             "username": user.username,
@@ -104,7 +109,7 @@ def apply(job_id):
         return jsonify({'error': verification_payload['error']})
     
     user_id = verification_payload['user_id']
-
+    
     job = Job.query.get(job_id)
 
     if job:
