@@ -42,7 +42,9 @@ def all_job_appliers(job_id):
     user_id = verification_payload['user_id']
     user = User.query.get(user_id)
 
-    job = Job.query.get(job_id)    
+    job = Job.query.get(job_id)
+    if not job:
+        return jsonify({'error': 'Job With Id ' + job_id + ' does not exist'})
     if job.posted_by != user.username:
         return jsonify({'error': 'Not Authorized'})
     

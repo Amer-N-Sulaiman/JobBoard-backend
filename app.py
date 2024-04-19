@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from Blueprints.user.user import user_bp
 from Blueprints.job.job import job_bp
 from database import db
@@ -15,5 +15,11 @@ db.init_app(app)
 app.register_blueprint(user_bp, url_prefix='/user')
 app.register_blueprint(job_bp, url_prefix='/job')
 
+
+@app.route('/')
+def home():
+    return jsonify({
+        'message': 'Home'
+    })
 if __name__ == "__main__":
     app.run(debug=True)
